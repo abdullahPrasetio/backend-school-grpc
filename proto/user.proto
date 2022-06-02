@@ -1,0 +1,52 @@
+syntax ="proto3";
+package models;
+
+option go_package="./proto";
+
+enum UserRole {
+    Student=0;
+    Admin=1;
+}
+message UserRegister{
+    int64 id = 1;
+    string first_name = 2;
+    string last_name = 3;
+    string email = 4;
+    string password = 5;
+    string phone = 6;
+}
+
+
+message UserWithoutPassword{
+    int64 id = 1;
+    string first_name = 2;
+    string last_name = 3;
+    string email = 4;
+    string phone = 5;
+    UserRole role = 6;
+}
+
+message UserId{
+    int64 id = 1;
+}
+
+message UserList{
+    repeated UserWithoutPassword list = 1;
+}
+
+import "google/api/annotations.proto";
+import "google/protobuf/Empty.proto";
+
+service Users{
+    rpc Register(UserRegister) returns (UserWithoutPassword){
+        option (google.api.http)={
+            post : "/api/v1/register",
+            body : "*",
+        };
+    }
+    rpc List(google.protobuf.Empty) returns (UserList){
+        option (google.api.http)={
+            get : "/api/v1/users",
+        };
+    } 
+}
